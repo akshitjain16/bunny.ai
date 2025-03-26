@@ -1,64 +1,49 @@
 
 import { useState, useEffect } from "react";
-import { Layers, Cpu, Zap, Download, Clipboard, Check, RefreshCcw, Sparkles } from "lucide-react";
+import { Layers, Download, Clipboard, Check, RefreshCcw, Sparkles, Code, Eye, Share2 } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import PromptInput from "../components/PromptInput";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { toast } from "@/components/ui/use-toast";
 import DashboardSidebar from "../components/DashboardSidebar";
-import ComponentPreview from "../components/ComponentPreview";
+import { Button } from "@/components/ui/button";
+import GeneratedComponentPreview from "../components/dashboard/GeneratedComponentPreview";
+import GeneratedComponentCode from "../components/dashboard/GeneratedComponentCode";
 
 const Dashboard = () => {
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [generatedComponent, setGeneratedComponent] = useState<any>(null);
-  const [dailyUsage, setDailyUsage] = useState(0);
-  const [dailyLimit, setDailyLimit] = useState(10); // Free tier limit
-  const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<"preview" | "code">("preview");
+  const [activeCodeTab, setActiveCodeTab] = useState<"html" | "jsx" | "vue">("jsx");
   const [recentPrompts, setRecentPrompts] = useState<string[]>([]);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    // In a real app, this would check user auth and fetch from backend
-    const savedUsage = localStorage.getItem("dailyUsage");
+    // Load recent prompts from localStorage
     const savedPrompts = localStorage.getItem("recentPrompts");
-    
-    if (savedUsage) {
-      setDailyUsage(parseInt(savedUsage));
-    }
     
     if (savedPrompts) {
       setRecentPrompts(JSON.parse(savedPrompts));
     }
-    
-    // Simulating checking user tier to set limits
-    // For now, we're setting the default free tier limit
   }, []);
 
-  const saveUsageData = (usage: number, prompts: string[]) => {
-    localStorage.setItem("dailyUsage", usage.toString());
+  const savePromptHistory = (prompts: string[]) => {
     localStorage.setItem("recentPrompts", JSON.stringify(prompts));
   };
 
   const handleGenerateComponent = async (promptText: string) => {
-    if (dailyUsage >= dailyLimit) {
-      toast({
-        title: "Daily limit reached",
-        description: "Upgrade to our Pro plan for unlimited component generation.",
-        variant: "destructive"
-      });
-      return;
-    }
-
     setIsLoading(true);
     setPrompt(promptText);
     
     // Add to recent prompts
     const updatedPrompts = [promptText, ...recentPrompts.slice(0, 4)];
     setRecentPrompts(updatedPrompts);
+    savePromptHistory(updatedPrompts);
     
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
     // Mock component generation based on prompt
     // In a real app, this would call an AI API
@@ -67,16 +52,9 @@ const Dashboard = () => {
     setGeneratedComponent(mockComponent);
     setIsLoading(false);
     
-    // Update usage count
-    const newUsage = dailyUsage + 1;
-    setDailyUsage(newUsage);
-    
-    // Save to localStorage
-    saveUsageData(newUsage, updatedPrompts);
-    
     toast({
       title: "Component generated successfully!",
-      description: `You have ${dailyLimit - newUsage} generations left today.`,
+      description: "Your UI component is ready to use.",
     });
   };
 
@@ -145,7 +123,44 @@ ${hasAnimation ? `
   Click Me
 </button>`,
       
-      preview: "button" // This would be a reference to what kind of component to preview
+      preview: "button", // Reference to component type
+      
+      vue: `<template>
+  <button class="custom-button">
+    Click Me
+  </button>
+</template>
+
+<style scoped>
+.custom-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background: ${isModern ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : '#3b82f6'};
+  color: white;
+  font-weight: 500;
+  border-radius: ${isBubble ? '9999px' : '8px'};
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  ${hasHover ? 'transition: all 0.3s ease;' : ''}
+}
+
+${hasHover ? `
+.custom-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+` : ''}
+
+${hasAnimation ? `
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.custom-button {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+` : ''}
+</style>`
     };
   };
 
@@ -153,7 +168,7 @@ ${hasAnimation ? `
     if (!generatedComponent) return;
     
     try {
-      await navigator.clipboard.writeText(generatedComponent.jsx);
+      await navigator.clipboard.writeText(generatedComponent[activeCodeTab]);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
       
@@ -174,10 +189,12 @@ ${hasAnimation ? `
   const handleDownload = () => {
     if (!generatedComponent) return;
     
+    const fileExtension = activeCodeTab === "jsx" ? "jsx" : activeCodeTab === "vue" ? "vue" : "html";
+    
     const element = document.createElement("a");
-    const file = new Blob([generatedComponent.jsx], {type: 'text/plain'});
+    const file = new Blob([generatedComponent[activeCodeTab]], {type: 'text/plain'});
     element.href = URL.createObjectURL(file);
-    element.download = "BonnyAI-Component.jsx";
+    element.download = `BonnyAI-Component.${fileExtension}`;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
@@ -188,23 +205,40 @@ ${hasAnimation ? `
     });
   };
 
+  const handleShareComponent = () => {
+    // In a real app, this would generate a shareable link
+    // For now, we'll just copy the prompt to clipboard
+    
+    navigator.clipboard.writeText(
+      `Check out this UI component I created with Bonny.AI: ${prompt}`
+    );
+    
+    toast({
+      title: "Share link copied",
+      description: "Share link has been copied to clipboard",
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
       <div className="flex flex-1 pt-16">
-        <DashboardSidebar usage={dailyUsage} limit={dailyLimit} />
+        <DashboardSidebar />
         
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto">
-          <div className="max-w-6xl mx-auto">
-            <div className="mb-8 animate-fade-in">
-              <h1 className="text-3xl font-bold mb-2">Design dashboard</h1>
-              <p className="text-muted-foreground">
-                Describe any UI component and Bonny.AI will generate it instantly
+        <main className="flex-1 p-4 lg:p-8 overflow-y-auto">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-6 animate-fade-in">
+              <div className="flex items-center mb-2">
+                <Sparkles className="h-6 w-6 text-aivora-500 mr-2" />
+                <h1 className="text-3xl font-bold">Bonny.AI Design Studio</h1>
+              </div>
+              <p className="text-muted-foreground max-w-3xl">
+                Describe any UI component in plain text and Bonny.AI will generate it instantly. Create unlimited components with no restrictions.
               </p>
             </div>
             
-            <div className="glass-card p-6 mb-8 animate-fade-in">
+            <div className="glass-card p-6 mb-8 animate-fade-in shadow-lg">
               <PromptInput
                 onSubmit={handleGenerateComponent}
                 isLoading={isLoading}
@@ -212,11 +246,6 @@ ${hasAnimation ? `
                 buttonText="Generate UI"
                 autoFocus
               />
-              
-              <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-                <Zap className="h-4 w-4" />
-                <span>{dailyLimit - dailyUsage} generations left today</span>
-              </div>
             </div>
             
             {isLoading ? (
@@ -227,61 +256,112 @@ ${hasAnimation ? `
                 </p>
               </div>
             ) : generatedComponent ? (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade-in">
-                <div className="glass-card p-6 rounded-xl overflow-hidden">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="font-semibold">Component Preview</h2>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={handleCopyCode}
-                        className="p-2 rounded-md bg-secondary hover:bg-secondary/80 transition-colors"
-                        aria-label="Copy code"
-                      >
-                        {copied ? <Check className="h-4 w-4" /> : <Clipboard className="h-4 w-4" />}
-                      </button>
-                      <button
-                        onClick={handleDownload}
-                        className="p-2 rounded-md bg-secondary hover:bg-secondary/80 transition-colors"
-                        aria-label="Download code"
-                      >
-                        <Download className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => handleGenerateComponent(prompt)}
-                        className="p-2 rounded-md bg-secondary hover:bg-secondary/80 transition-colors"
-                        aria-label="Regenerate component"
-                      >
-                        <RefreshCcw className="h-4 w-4" />
-                      </button>
-                    </div>
+              <div className="animate-fade-in space-y-6">
+                <div className="flex flex-col lg:flex-row gap-4 mb-2">
+                  <div className="flex">
+                    <Button
+                      variant={activeTab === "preview" ? "default" : "secondary"}
+                      onClick={() => setActiveTab("preview")}
+                      className="rounded-r-none"
+                    >
+                      <Eye className="mr-2 h-4 w-4" /> Preview
+                    </Button>
+                    <Button
+                      variant={activeTab === "code" ? "default" : "secondary"}
+                      onClick={() => setActiveTab("code")}
+                      className="rounded-l-none"
+                    >
+                      <Code className="mr-2 h-4 w-4" /> Code
+                    </Button>
                   </div>
                   
-                  <div className="h-60 flex items-center justify-center border border-border/50 rounded-lg bg-background/50">
-                    <ComponentPreview component={generatedComponent} />
+                  <div className="flex ml-auto gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleCopyCode}
+                    >
+                      {copied ? <Check className="h-4 w-4 mr-1" /> : <Clipboard className="h-4 w-4 mr-1" />}
+                      Copy
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleDownload}
+                    >
+                      <Download className="h-4 w-4 mr-1" />
+                      Download
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleShareComponent}
+                    >
+                      <Share2 className="h-4 w-4 mr-1" />
+                      Share
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleGenerateComponent(prompt)}
+                    >
+                      <RefreshCcw className="h-4 w-4 mr-1" />
+                      Regenerate
+                    </Button>
                   </div>
                 </div>
                 
-                <div className="glass-card p-6 rounded-xl overflow-hidden">
-                  <h2 className="font-semibold mb-4">Component Code</h2>
-                  <div className="bg-secondary/30 rounded-lg p-4 overflow-x-auto">
-                    <pre className="text-sm whitespace-pre-wrap">
-                      <code>{generatedComponent.jsx}</code>
-                    </pre>
-                  </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {activeTab === "preview" ? (
+                    <div className="col-span-2">
+                      <GeneratedComponentPreview component={generatedComponent} />
+                    </div>
+                  ) : (
+                    <>
+                      <div className="glass-card overflow-hidden rounded-xl shadow-lg">
+                        <div className="border-b border-border/50 p-3 bg-card/50">
+                          <div className="flex gap-1">
+                            {(["jsx", "html", "vue"] as const).map((tab) => (
+                              <Button
+                                key={tab}
+                                size="sm"
+                                variant={activeCodeTab === tab ? "default" : "ghost"}
+                                className="text-xs px-3 py-1"
+                                onClick={() => setActiveCodeTab(tab)}
+                              >
+                                {tab.toUpperCase()}
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                        <GeneratedComponentCode 
+                          component={generatedComponent} 
+                          activeCodeTab={activeCodeTab}
+                        />
+                      </div>
+                      
+                      <div className="glass-card p-6 rounded-xl relative shadow-lg">
+                        <h3 className="text-lg font-semibold mb-3">Live Preview</h3>
+                        <div className="h-60 flex items-center justify-center border border-border/50 rounded-lg bg-background/50">
+                          <GeneratedComponentPreview component={generatedComponent} />
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             ) : (
-              <div className="glass-card p-6 rounded-xl text-center py-16 animate-fade-in">
-                <Sparkles className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-60" />
-                <h2 className="text-xl font-medium mb-2">Describe your UI component</h2>
-                <p className="text-muted-foreground max-w-md mx-auto">
+              <div className="glass-card p-8 rounded-xl text-center py-20 animate-fade-in shadow-lg">
+                <Sparkles className="h-16 w-16 mx-auto mb-6 text-aivora-500 opacity-80" />
+                <h2 className="text-2xl font-bold mb-3">Unlimited UI Component Generation</h2>
+                <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
                   Type a description of what you want to create and Bonny.AI will 
-                  generate it for you instantly
+                  generate it for you instantly. Create as many components as you need!
                 </p>
                 
                 {recentPrompts.length > 0 && (
-                  <div className="mt-8">
-                    <h3 className="text-sm font-medium mb-2 text-muted-foreground">
+                  <div className="mt-10">
+                    <h3 className="text-sm font-medium mb-3 text-muted-foreground">
                       Recently used prompts:
                     </h3>
                     <div className="flex flex-wrap gap-2 justify-center">

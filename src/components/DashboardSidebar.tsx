@@ -1,30 +1,30 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Home, Layers, Settings, Crown, ChevronLeft, ChevronRight, BookOpen, History, Palette } from "lucide-react";
+import { 
+  Home, Layers, Settings, ChevronLeft, ChevronRight, 
+  BookOpen, History, Palette, Grid, Sparkles, LayoutGrid,
+  Monitor, Smartphone, Tablet
+} from "lucide-react";
 
-interface DashboardSidebarProps {
-  usage: number;
-  limit: number;
-}
-
-const DashboardSidebar = ({ usage, limit }: DashboardSidebarProps) => {
+const DashboardSidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
   };
 
-  const progressPercentage = (usage / limit) * 100;
-
   return (
     <div className={`h-full bg-card border-r border-border/50 transition-all duration-300 ${
       collapsed ? "w-16" : "w-64"
     }`}>
       <div className="p-4 flex flex-col h-full">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-8">
           {!collapsed && (
-            <h2 className="font-semibold text-lg">Bonny.AI</h2>
+            <div className="flex items-center">
+              <Sparkles className="h-5 w-5 text-aivora-500 mr-2" />
+              <h2 className="font-bold text-lg">Bonny.AI</h2>
+            </div>
           )}
           <button
             onClick={toggleSidebar}
@@ -64,44 +64,48 @@ const DashboardSidebar = ({ usage, limit }: DashboardSidebarProps) => {
             to="/dashboard"
             className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary/50 text-muted-foreground hover:text-foreground transition-colors"
           >
-            <History className="h-5 w-5" />
-            {!collapsed && <span>History</span>}
+            <Grid className="h-5 w-5" />
+            {!collapsed && <span>UI Library</span>}
           </Link>
           
           <Link
             to="/dashboard"
             className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary/50 text-muted-foreground hover:text-foreground transition-colors"
           >
-            <BookOpen className="h-5 w-5" />
-            {!collapsed && <span>Documentation</span>}
+            <History className="h-5 w-5" />
+            {!collapsed && <span>History</span>}
           </Link>
         </nav>
 
+        {!collapsed && (
+          <div className="mt-8 px-3 py-4 rounded-lg bg-secondary/30">
+            <h3 className="font-medium text-sm mb-3">Responsive Preview</h3>
+            <div className="flex items-center justify-between text-muted-foreground">
+              <button className="p-2 rounded hover:bg-secondary/50 hover:text-foreground transition-colors">
+                <Smartphone className="h-5 w-5" />
+              </button>
+              <button className="p-2 rounded hover:bg-secondary/50 hover:text-foreground transition-colors">
+                <Tablet className="h-5 w-5" />
+              </button>
+              <button className="p-2 rounded hover:bg-secondary/50 hover:text-foreground transition-colors">
+                <Monitor className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="mt-auto">
           {!collapsed && (
-            <div className="mb-4 p-3 rounded-lg bg-secondary/30">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Daily Usage</span>
-                <span className="text-xs text-muted-foreground">{usage}/{limit}</span>
+            <div className="mb-4 p-4 rounded-lg bg-secondary/30">
+              <div className="flex items-center mb-2">
+                <LayoutGrid className="h-4 w-4 text-aivora-500 mr-2" />
+                <span className="text-sm font-medium">Unlimited Access</span>
               </div>
-              <div className="h-2 bg-secondary/50 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-aivora-500" 
-                  style={{ width: `${progressPercentage}%` }}
-                ></div>
-              </div>
+              <p className="text-xs text-muted-foreground">
+                Generate unlimited UI components with Bonny.AI
+              </p>
             </div>
           )}
-
-          <Link
-            to="/pricing"
-            className={`flex items-center gap-2 p-2 rounded-lg bg-aivora-500 hover:bg-aivora-600 text-white transition-colors w-full justify-center ${
-              collapsed ? "flex-col py-3" : ""
-            }`}
-          >
-            <Crown className="h-4 w-4" />
-            {!collapsed && <span>Upgrade to Pro</span>}
-          </Link>
           
           <Link
             to="/settings"
