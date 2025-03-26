@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { Check } from "lucide-react";
+import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -22,6 +23,7 @@ const Pricing = () => {
         "Community support",
       ],
       cta: "Get Started",
+      ctaLink: "/dashboard",
       highlight: false,
     },
     {
@@ -33,13 +35,14 @@ const Pricing = () => {
       },
       features: [
         "Unlimited UI generations",
-        "Advanced templates & components",
+        "1 million+ component variations",
         "React, Vue & Angular support",
         "API access",
         "Priority support",
         "Remove attribution",
       ],
       cta: "Start Free Trial",
+      ctaLink: "/dashboard",
       highlight: true,
     },
     {
@@ -59,6 +62,7 @@ const Pricing = () => {
         "Team management",
       ],
       cta: "Contact Sales",
+      ctaLink: "/contact",
       highlight: false,
     },
   ];
@@ -142,15 +146,16 @@ const Pricing = () => {
                     )}
                   </div>
                   
-                  <button 
-                    className={`w-full py-2.5 px-4 rounded-lg font-medium transition-colors ${
+                  <Link 
+                    to={plan.ctaLink}
+                    className={`block w-full py-2.5 px-4 rounded-lg font-medium text-center transition-colors ${
                       plan.highlight
                         ? "bg-aivora-500 hover:bg-aivora-600 text-white"
                         : "bg-secondary hover:bg-secondary/80"
                     }`}
                   >
                     {plan.cta}
-                  </button>
+                  </Link>
                   
                   <div className="mt-6 space-y-3">
                     {plan.features.map((feature) => (
@@ -178,11 +183,11 @@ const Pricing = () => {
                   a: "The free plan allows you to generate up to 10 UI components per day. For unlimited generations, consider upgrading to our Pro plan."
                 },
                 {
-                  q: "Can I export the generated components to my preferred framework?",
-                  a: "Yes, with the Pro and Enterprise plans, you can export components to React, Vue, and Angular. The free plan supports HTML and CSS exports."
+                  q: "How many different component variations does Bonny.AI offer?",
+                  a: "With our Pro and Enterprise plans, you get access to over 1 million component variations across different styles, frameworks, and design patterns."
                 },
                 {
-                  q: "Do I need to create an account to use Aivora?",
+                  q: "Do I need to create an account to use Bonny.AI?",
                   a: "No, you can use the basic features without creating an account. However, to save your generated components and access advanced features, you'll need to sign up."
                 },
                 {

@@ -1,12 +1,12 @@
 
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import ThemeToggle from "./ThemeToggle";
 import { Menu, X } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -15,105 +15,105 @@ const Header = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  // Close mobile menu when changing routes
   useEffect(() => {
-    setIsMenuOpen(false);
+    setIsMobileMenuOpen(false);
   }, [location]);
 
-  const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Results", path: "/results" },
-    { name: "Pricing", path: "/pricing" },
+  const menuItems = [
+    { text: "Home", href: "/" },
+    { text: "Dashboard", href: "/dashboard" },
+    { text: "Pricing", href: "/pricing" },
   ];
 
   return (
-    <header 
+    <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "py-3 glass shadow-sm" : "py-5 bg-transparent"
+        isScrolled ? "bg-background/70 backdrop-blur-xl shadow-sm" : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between px-4 md:px-6">
-        <Link 
-          to="/" 
-          className="flex items-center space-x-2"
-        >
-          <div className="relative h-8 w-8 rounded-full bg-gradient-to-tr from-aivora-500 to-aivora-700 flex items-center justify-center">
-            <div className="absolute inset-0.5 rounded-full bg-background"></div>
-            <span className="relative text-lg font-bold text-aivora-500">A</span>
-          </div>
-          <span className="text-xl font-bold">Aivora</span>
-        </Link>
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="flex items-center justify-between h-16">
+          <Link to="/" className="flex items-center">
+            <span className="text-xl font-bold text-foreground">Bonny.AI</span>
+          </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          <div className="flex space-x-6">
-            {navLinks.map((link) => (
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-6">
+            {menuItems.map((item) => (
               <Link
-                key={link.name}
-                to={link.path}
-                className={`text-sm font-medium transition-colors hover:text-aivora-500 ${
-                  location.pathname === link.path 
-                    ? "text-aivora-500" 
-                    : "text-foreground/80"
+                key={item.text}
+                to={item.href}
+                className={`font-medium transition-colors ${
+                  location.pathname === item.href
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {link.name}
+                {item.text}
               </Link>
             ))}
-          </div>
-          
-          <div className="flex items-center space-x-4">
+          </nav>
+
+          <div className="flex items-center gap-3">
             <ThemeToggle />
-            <a 
-              href="#" 
-              className="text-sm px-4 py-2 rounded-full bg-aivora-500 text-white hover:bg-aivora-600 transition-colors"
+            
+            <Link
+              to="/dashboard"
+              className="hidden md:flex items-center h-9 px-4 py-2 bg-aivora-500 hover:bg-aivora-600 text-white rounded-md font-medium transition-colors"
             >
               Get Started
-            </a>
-          </div>
-        </nav>
+            </Link>
 
-        {/* Mobile Menu Button */}
-        <div className="flex items-center space-x-4 md:hidden">
-          <ThemeToggle />
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 rounded-md hover:bg-secondary transition-colors"
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+            {/* Mobile menu button */}
+            <button
+              className="p-2 rounded-md md:hidden"
+              onClick={toggleMobileMenu}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="md:hidden fixed inset-0 pt-16 z-40 bg-background/95 backdrop-blur-md animate-fade-in">
-          <nav className="flex flex-col items-center justify-center space-y-8 h-full">
-            {navLinks.map((link) => (
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-background/95 backdrop-blur-lg border-b border-border animate-slide-down">
+          <div className="container mx-auto px-4 py-4">
+            <nav className="flex flex-col space-y-3">
+              {menuItems.map((item) => (
+                <Link
+                  key={item.text}
+                  to={item.href}
+                  className={`py-2 font-medium ${
+                    location.pathname === item.href
+                      ? "text-foreground"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  {item.text}
+                </Link>
+              ))}
               <Link
-                key={link.name}
-                to={link.path}
-                className={`text-lg font-medium transition-colors hover:text-aivora-500 ${
-                  location.pathname === link.path 
-                    ? "text-aivora-500" 
-                    : "text-foreground/80"
-                }`}
+                to="/dashboard"
+                className="mt-2 py-2 bg-aivora-500 hover:bg-aivora-600 text-white rounded-md font-medium text-center transition-colors"
               >
-                {link.name}
+                Get Started
               </Link>
-            ))}
-            <a 
-              href="#" 
-              className="mt-4 px-6 py-2 rounded-full bg-aivora-500 text-white hover:bg-aivora-600 transition-colors"
-            >
-              Get Started
-            </a>
-          </nav>
+            </nav>
+          </div>
         </div>
       )}
     </header>
