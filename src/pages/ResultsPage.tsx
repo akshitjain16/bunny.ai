@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
@@ -27,9 +28,9 @@ const ResultsPage = () => {
       // This is a workaround since we can't directly call the component's method
       const triggerGeneration = async () => {
         const componentGenerator = document.querySelector('button[type="submit"]');
-        if (componentGenerator) {
+        if (componentGenerator && componentGenerator instanceof HTMLElement) {
           setTimeout(() => {
-            componentGenerator.click();
+            (componentGenerator as HTMLButtonElement).click();
           }, 100);
         }
       };
@@ -75,17 +76,17 @@ const ResultsPage = () => {
                 <ActionButtons
                   result={result}
                   activeCodeTab={activeCodeTab}
-                  handlePromptSubmit={(text) => {
+                  handlePromptSubmit={async (text: string) => {
                     setIsLoading(true);
                     const triggerRegeneration = async () => {
                       const componentGenerator = document.querySelector('button[type="submit"]');
-                      if (componentGenerator) {
+                      if (componentGenerator && componentGenerator instanceof HTMLElement) {
                         setTimeout(() => {
-                          componentGenerator.click();
+                          (componentGenerator as HTMLButtonElement).click();
                         }, 100);
                       }
                     };
-                    triggerRegeneration();
+                    await triggerRegeneration();
                   }}
                   prompt={prompt}
                 />
