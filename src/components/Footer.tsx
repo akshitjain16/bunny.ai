@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Github, Twitter, Instagram } from "lucide-react";
+import { Github, Twitter, Instagram, Sparkles } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -11,9 +11,9 @@ const Footer = () => {
             <Link to="/" className="flex items-center space-x-2">
               <div className="relative h-8 w-8 rounded-full bg-gradient-to-tr from-aivora-500 to-aivora-700 flex items-center justify-center">
                 <div className="absolute inset-0.5 rounded-full bg-background"></div>
-                <span className="relative text-lg font-bold text-aivora-500">A</span>
+                <Sparkles className="relative h-4 w-4 text-aivora-500" />
               </div>
-              <span className="text-xl font-bold">Aivora</span>
+              <span className="text-xl font-bold">Bonny.AI</span>
             </Link>
             <p className="mt-3 text-sm text-muted-foreground">
               AI-powered UI generator – Instantly build stunning interfaces from text!
@@ -73,7 +73,7 @@ const Footer = () => {
         
         <div className="mt-12 pt-6 border-t border-border/50 flex flex-col md:flex-row justify-between items-center">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Aivora. All rights reserved.
+            © {new Date().getFullYear()} Bonny.AI. All rights reserved.
           </p>
           <div className="mt-4 md:mt-0 flex space-x-6">
             <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">

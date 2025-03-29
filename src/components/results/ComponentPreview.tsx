@@ -49,21 +49,8 @@ const ComponentPreview = ({
         
         {activeTab === "preview" ? (
           <div className="glass-card p-8 flex items-center justify-center min-h-[400px] rounded-lg">
-            <div className="pricing-card">
-              <div className="pricing-header">
-                <h3 className="plan-name">Pro Plan</h3>
-                <p className="plan-price">$29<span>/month</span></p>
-              </div>
-              <ul className="features-list">
-                <li>Unlimited projects</li>
-                <li>Priority support</li>
-                <li>Custom domain</li>
-                <li>Analytics dashboard</li>
-              </ul>
-              <button className="subscribe-button">Get Started</button>
-            </div>
-            
-            <style>{result.css}</style>
+            <div dangerouslySetInnerHTML={{ __html: result.html }} />
+            <style dangerouslySetInnerHTML={{ __html: result.css }} />
           </div>
         ) : (
           <div className="rounded-lg glass overflow-hidden">

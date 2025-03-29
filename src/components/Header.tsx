@@ -70,7 +70,7 @@ const Header = () => {
               to="/dashboard"
               className="hidden md:flex items-center h-9 px-4 py-2 bg-aivora-500 hover:bg-aivora-600 text-white rounded-md font-medium transition-colors"
             >
-              Get Started
+              Try Bonny.AI
             </Link>
 
             {/* Mobile menu button */}
@@ -111,7 +111,7 @@ const Header = () => {
                 to="/dashboard"
                 className="mt-2 py-2 bg-aivora-500 hover:bg-aivora-600 text-white rounded-md font-medium text-center transition-colors"
               >
-                Get Started
+                Try Bonny.AI
               </Link>
             </nav>
           </div>

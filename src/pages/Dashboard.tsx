@@ -38,129 +38,128 @@ const Dashboard = () => {
     setPrompt(promptText);
     
     // Add to recent prompts
-    const updatedPrompts = [promptText, ...recentPrompts.slice(0, 4)];
+    const updatedPrompts = [promptText, ...recentPrompts.filter(p => p !== promptText).slice(0, 4)];
     setRecentPrompts(updatedPrompts);
     savePromptHistory(updatedPrompts);
     
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Mock component generation based on prompt
-    // In a real app, this would call an AI API
-    const mockComponent = generateMockComponent(promptText);
+    // Generate component based on prompt
+    const generatedComponent = generateComponent(promptText);
     
-    setGeneratedComponent(mockComponent);
+    setGeneratedComponent(generatedComponent);
     setIsLoading(false);
     
     toast({
       title: "Component generated successfully!",
-      description: "Your UI component is ready to use.",
+      description: "Your UI component is ready to use and customize.",
     });
   };
 
-  const generateMockComponent = (promptText: string) => {
-    // Simple mock logic to generate different components based on prompt words
-    // In a real app, this would be the AI model's response
+  const generateComponent = (promptText: string) => {
+    // Extract key features from the prompt
     const prompt = promptText.toLowerCase();
     
-    // Default button component with customizations based on prompt
-    const hasHover = prompt.includes("hover");
+    // Customize based on prompt keywords
     const isModern = prompt.includes("modern");
+    const isFloating = prompt.includes("float");
     const isBubble = prompt.includes("bubble") || prompt.includes("rounded");
+    const hasHover = prompt.includes("hover");
     const hasAnimation = prompt.includes("animation") || prompt.includes("animate");
+    const isGradient = prompt.includes("gradient");
+    const isOutlined = prompt.includes("outline");
+    const isDark = prompt.includes("dark");
+    const isIcon = prompt.includes("icon");
+    const hasShadow = prompt.includes("shadow");
     
-    return {
-      jsx: `import React from 'react';
+    // Generate HTML
+    let html = `<button class="custom-button">`;
+    if (isIcon) {
+      html += `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 8-9.04 9.06a10.07 10.07 0 1 1 14.14-14.14L8.03 12"/></svg>`;
+    }
+    html += `Click Me</button>`;
+    
+    // Generate CSS
+    let css = `.custom-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: ${isBubble ? '10px 20px' : '12px 24px'};
+  ${isGradient ? 'background: linear-gradient(135deg, #6366f1, #8b5cf6);' : isOutlined ? 'background: transparent;' : isModern ? 'background: #3b82f6;' : 'background: #2563eb;'}
+  color: ${isOutlined ? (isDark ? '#fff' : '#3b82f6') : '#fff'};
+  font-weight: 500;
+  border-radius: ${isBubble ? '9999px' : '8px'};
+  ${isOutlined ? `border: 2px solid ${isDark ? '#fff' : '#3b82f6'};` : 'border: none;'}
+  ${hasShadow ? 'box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);' : ''}
+  cursor: pointer;
+  transition: all 0.3s ease;
+  ${isFloating ? 'position: relative;' : ''}
+}`;
+
+    if (hasHover) {
+      css += `
+.custom-button:hover {
+  ${isOutlined ? `background: ${isDark ? '#fff' : '#3b82f6'}; color: ${isDark ? '#3b82f6' : '#fff'};` : 'filter: brightness(110%);'}
+  ${hasShadow ? 'box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);' : ''}
+  ${isFloating ? 'transform: translateY(-3px);' : 'transform: scale(1.05);'}
+}`;
+    }
+
+    if (hasAnimation) {
+      css += `
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.custom-button {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}`;
+    }
+
+    // Generate JSX
+    const jsx = `import React from 'react';
 
 const CustomButton = () => {
   return (
     <button 
-      className="${isModern ? 'bg-gradient-to-r from-purple-500 to-indigo-600' : 'bg-blue-600'} 
+      className="${isModern ? 'bg-gradient-to-r from-purple-500 to-indigo-600' : isOutlined ? 'bg-transparent border-2 border-blue-500 text-blue-500' : 'bg-blue-600'} 
       ${isBubble ? 'rounded-full' : 'rounded-lg'}
-      px-6 py-2.5 text-white font-medium shadow-lg
+      ${isIcon ? 'inline-flex items-center gap-2' : ''}
+      px-6 py-2.5 text-white font-medium
+      ${hasShadow ? 'shadow-lg' : ''}
       ${hasHover ? 'transition-all duration-300 hover:shadow-xl hover:scale-105' : ''}
       ${hasAnimation ? 'animate-pulse' : ''}"
     >
+      ${isIcon ? `<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="m12 8-9.04 9.06a10.07 10.07 0 1 1 14.14-14.14L8.03 12"/></svg>` : ''}
       Click Me
     </button>
   );
 };
 
-export default CustomButton;`,
-      
-      css: `.custom-button {
-  display: inline-block;
-  padding: 10px 20px;
-  background: ${isModern ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : '#3b82f6'};
-  color: white;
-  font-weight: 500;
-  border-radius: ${isBubble ? '9999px' : '8px'};
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  ${hasHover ? `
-  transition: all 0.3s ease;
-  ` : ''}
-}
+export default CustomButton;`;
 
-${hasHover ? `
-.custom-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-` : ''}
-
-${hasAnimation ? `
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.8; }
-}
-
-.custom-button {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-` : ''}`,
-      
-      html: `<button class="custom-button">
-  Click Me
-</button>`,
-      
-      preview: "button", // Reference to component type
-      
-      vue: `<template>
-  <button class="custom-button">
+    // Generate Vue component
+    const vue = `<template>
+  <button 
+    class="custom-button"
+  >
+    ${isIcon ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 8-9.04 9.06a10.07 10.07 0 1 1 14.14-14.14L8.03 12"/></svg>` : ''}
     Click Me
   </button>
 </template>
 
 <style scoped>
-.custom-button {
-  display: inline-block;
-  padding: 10px 20px;
-  background: ${isModern ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : '#3b82f6'};
-  color: white;
-  font-weight: 500;
-  border-radius: ${isBubble ? '9999px' : '8px'};
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  ${hasHover ? 'transition: all 0.3s ease;' : ''}
-}
+${css}
+</style>`;
 
-${hasHover ? `
-.custom-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-` : ''}
-
-${hasAnimation ? `
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.8; }
-}
-
-.custom-button {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-` : ''}
-</style>`
+    return {
+      html,
+      css,
+      jsx,
+      vue,
+      preview: "button"
     };
   };
 
@@ -207,8 +206,6 @@ ${hasAnimation ? `
 
   const handleShareComponent = () => {
     // In a real app, this would generate a shareable link
-    // For now, we'll just copy the prompt to clipboard
-    
     navigator.clipboard.writeText(
       `Check out this UI component I created with Bonny.AI: ${prompt}`
     );
