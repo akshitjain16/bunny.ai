@@ -36,7 +36,7 @@ const ActionButtons = ({
     
     const code = result[activeCodeTab === "html" ? "html" : activeCodeTab];
     const extension = activeCodeTab === "jsx" ? "jsx" : (activeCodeTab === "vue" ? "vue" : "html");
-    const filename = `bonny-component.${extension}`;
+    const filename = `bunny-component.${extension}`;
     
     const blob = new Blob([code], { type: "text/plain" });
     const url = URL.createObjectURL(blob);

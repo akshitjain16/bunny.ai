@@ -66,11 +66,11 @@ export const faqItems = [
     a: "The free plan allows you to generate up to 10 UI components per day. For unlimited generations, consider upgrading to our Pro plan."
   },
   {
-    q: "How many different component variations does Bonny.AI offer?",
+    q: "How many different component variations does Bunny.AI offer?",
     a: "With our Pro and Enterprise plans, you get access to over 1 million component variations across different styles, frameworks, and design patterns."
   },
   {
-    q: "Do I need to create an account to use Bonny.AI?",
+    q: "Do I need to create an account to use Bunny.AI?",
     a: "No, you can use the basic features without creating an account. However, to save your generated components and access advanced features, you'll need to sign up."
   },
   {

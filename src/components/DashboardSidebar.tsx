@@ -23,7 +23,7 @@ const DashboardSidebar = () => {
           {!collapsed && (
             <div className="flex items-center">
               <Sparkles className="h-5 w-5 text-aivora-500 mr-2" />
-              <h2 className="font-bold text-lg">Bonny.AI</h2>
+              <h2 className="font-bold text-lg">Bunny.AI</h2>
             </div>
           )}
           <button
@@ -102,7 +102,7 @@ const DashboardSidebar = () => {
                 <span className="text-sm font-medium">Unlimited Access</span>
               </div>
               <p className="text-xs text-muted-foreground">
-                Generate unlimited UI components with Bonny.AI
+                Generate unlimited UI components with Bunny.AI
               </p>
             </div>
           )}

@@ -193,7 +193,7 @@ ${css}
     const element = document.createElement("a");
     const file = new Blob([generatedComponent[activeCodeTab]], {type: 'text/plain'});
     element.href = URL.createObjectURL(file);
-    element.download = `BonnyAI-Component.${fileExtension}`;
+    element.download = `BunnyAI-Component.${fileExtension}`;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
@@ -207,7 +207,7 @@ ${css}
   const handleShareComponent = () => {
     // In a real app, this would generate a shareable link
     navigator.clipboard.writeText(
-      `Check out this UI component I created with Bonny.AI: ${prompt}`
+      `Check out this UI component I created with Bunny.AI: ${prompt}`
     );
     
     toast({
@@ -228,10 +228,10 @@ ${css}
             <div className="mb-6 animate-fade-in">
               <div className="flex items-center mb-2">
                 <Sparkles className="h-6 w-6 text-aivora-500 mr-2" />
-                <h1 className="text-3xl font-bold">Bonny.AI Design Studio</h1>
+                <h1 className="text-3xl font-bold">Bunny.AI Design Studio</h1>
               </div>
               <p className="text-muted-foreground max-w-3xl">
-                Describe any UI component in plain text and Bonny.AI will generate it instantly. Create unlimited components with no restrictions.
+                Describe any UI component in plain text and Bunny.AI will generate it instantly. Create unlimited components with no restrictions.
               </p>
             </div>
             
@@ -352,7 +352,7 @@ ${css}
                 <Sparkles className="h-16 w-16 mx-auto mb-6 text-aivora-500 opacity-80" />
                 <h2 className="text-2xl font-bold mb-3">Unlimited UI Component Generation</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
-                  Type a description of what you want to create and Bonny.AI will 
+                  Type a description of what you want to create and Bunny.AI will 
                   generate it for you instantly. Create as many components as you need!
                 </p>
                 
