@@ -43,7 +43,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center">
             <Sparkles className="h-5 w-5 text-aivora-500 mr-2" />
-            <span className="text-xl font-bold text-foreground">Bonny.AI</span>
+            <span className="text-xl font-bold text-foreground">Bunny.AI</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -70,7 +70,7 @@ const Header = () => {
               to="/dashboard"
               className="hidden md:flex items-center h-9 px-4 py-2 bg-aivora-500 hover:bg-aivora-600 text-white rounded-md font-medium transition-colors"
             >
-              Try Bonny.AI
+              Try Bunny.AI
             </Link>
 
             {/* Mobile menu button */}
@@ -111,7 +111,7 @@ const Header = () => {
                 to="/dashboard"
                 className="mt-2 py-2 bg-aivora-500 hover:bg-aivora-600 text-white rounded-md font-medium text-center transition-colors"
               >
-                Try Bonny.AI
+                Try Bunny.AI
               </Link>
             </nav>
           </div>
